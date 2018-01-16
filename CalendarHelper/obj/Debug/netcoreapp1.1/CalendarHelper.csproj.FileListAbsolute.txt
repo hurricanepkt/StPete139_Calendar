@@ -1,0 +1,9 @@
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\bin\Debug\netcoreapp1.1\CalendarHelper.deps.json
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\bin\Debug\netcoreapp1.1\CalendarHelper.runtimeconfig.json
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\bin\Debug\netcoreapp1.1\CalendarHelper.runtimeconfig.dev.json
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\bin\Debug\netcoreapp1.1\CalendarHelper.dll
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\bin\Debug\netcoreapp1.1\CalendarHelper.pdb
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\obj\Debug\netcoreapp1.1\CalendarHelper.csprojResolveAssemblyReference.cache
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\obj\Debug\netcoreapp1.1\CalendarHelper.AssemblyInfo.cs
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\obj\Debug\netcoreapp1.1\CalendarHelper.dll
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\CalendarHelper\obj\Debug\netcoreapp1.1\CalendarHelper.pdb
