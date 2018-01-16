@@ -1,0 +1,12 @@
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\StPete139_Calendar_Tests.deps.json
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\StPete139_Calendar_Tests.runtimeconfig.json
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\StPete139_Calendar_Tests.runtimeconfig.dev.json
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\StPete139_Calendar_Tests.dll
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\bin\Debug\netcoreapp1.1\StPete139_Calendar_Tests.pdb
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\obj\Debug\netcoreapp1.1\StPete139_Calendar_Tests.csprojResolveAssemblyReference.cache
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\obj\Debug\netcoreapp1.1\StPete139_Calendar_Tests.AssemblyInfo.cs
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\obj\Debug\netcoreapp1.1\StPete139_Calendar_Tests.dll
+C:\Users\mark.greenway\Desktop\Repos\Public\StPete139_Calendar\StPete139_Calendar_Tests\obj\Debug\netcoreapp1.1\StPete139_Calendar_Tests.pdb
