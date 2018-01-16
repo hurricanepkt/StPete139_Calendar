@@ -9,6 +9,7 @@ namespace StPete139_Calendar_Tests
         [TestMethod]
         public void Smoke()
         {
+            Console.WriteLine("Smoke Test");
            Assert.AreEqual(2, 1 + 1);
         }
     }
