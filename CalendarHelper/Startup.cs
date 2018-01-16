@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CalendarHelper.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 
 namespace CalendarHelper
 {
@@ -30,7 +32,11 @@ namespace CalendarHelper
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("St Pete 139");
+                context.Response.ContentType = "text/calendar";
+                context.Response.Headers.Add("Content-Disposition", "inline; filename=demo.ical");
+                var blah = new CalendarCreator();
+                
+                await context.Response.WriteAsync(blah.CreateDemo());
             });
         }
     }
