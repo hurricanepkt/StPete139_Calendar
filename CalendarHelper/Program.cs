@@ -25,7 +25,7 @@ namespace CalendarHelper
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
                 .Build();
-
+            Console.WriteLine("Program Main Run");
             host.Run();
         }
     }
