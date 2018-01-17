@@ -67,8 +67,8 @@ namespace CalendarHelper
                     var urls = (string)Configuration["URLs"];
                     var urlsArray = urls.Split(';');
 
-                    //context.Response.ContentType = "text/calendar";
-                    //context.Response.Headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
+                    context.Response.ContentType = "text/calendar";
+                    context.Response.Headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
                     var calendarCreator = new CalendarCreator(logger);
                     await context.Response.WriteAsync(await calendarCreator.Merge(urlsArray));
                 }
