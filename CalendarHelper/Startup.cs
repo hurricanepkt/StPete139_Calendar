@@ -7,6 +7,7 @@ using CalendarHelper.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -39,13 +40,13 @@ namespace CalendarHelper
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddMemoryCache();
         }
 
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IMemoryCache memoryCache)
         {
             loggerFactory.AddConsole();
 
@@ -70,7 +71,7 @@ namespace CalendarHelper
                     context.Response.ContentType = "text/calendar; charset=UTF-8";
                     AddHeaders(context);
                     //context.Response.Headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
-                    var calendarCreator = new CalendarCreator(logger);
+                    var calendarCreator = new CalendarCreator(logger, memoryCache);
                     await context.Response.WriteAsync(await calendarCreator.Merge(urlsArray));
                 }
                 catch (Exception ex)

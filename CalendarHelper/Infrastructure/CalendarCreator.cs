@@ -10,6 +10,7 @@ using Ical.Net.Serialization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.TimeZones;
@@ -54,9 +55,11 @@ namespace CalendarHelper.Infrastructure
 
         private static readonly List<string> Tzids = new List<string>();
         private readonly ILogger _logger;
-        public CalendarCreator(ILogger logger)
+        private readonly IMemoryCache _memoryCache;
+        public CalendarCreator(ILogger logger , IMemoryCache memoryCache)
         {
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         private static CalendarEvent CopyCalendarEvent(CalendarEvent calendarEvent)
@@ -146,8 +149,25 @@ namespace CalendarHelper.Infrastructure
 
         private async Task<Calendar> GetUrlAsCalendar(string url)
         {
-            var iCalendarString = await GetUrlAsString(url);
-            return Calendar.Load(iCalendarString);
+            string cacheEntry;
+
+            // Look for cache key.
+            if (!_memoryCache.TryGetValue(url, out cacheEntry))
+            {
+                // Key not in cache, so get data.
+                cacheEntry = await GetUrlAsString(url);
+
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(3));
+
+
+                // Save data in cache.
+                _memoryCache.Set(url, cacheEntry, cacheEntryOptions);
+            }
+
+           
+            return Calendar.Load(cacheEntry);
         }
 
         private async Task<string> GetUrlAsString(string url)
