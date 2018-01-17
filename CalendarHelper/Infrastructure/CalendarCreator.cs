@@ -21,7 +21,7 @@ namespace CalendarHelper.Infrastructure
         public async Task<string> Merge(string[] urlsArray)
         {
             var retVal = new Calendar();
-            var downloadTasks = urlsArray.Select(GetUrlAsCalendar).ToArray();
+            var downloadTasks = urlsArray.Where(f=> !String.IsNullOrEmpty(f)).Select(GetUrlAsCalendar).ToArray();
             var calendars = await Task.WhenAll(downloadTasks);
          
             

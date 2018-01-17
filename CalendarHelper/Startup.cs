@@ -55,7 +55,8 @@ namespace CalendarHelper
             }
 
             app.UseStaticFiles();
-        
+            app.UseResponseBuffering();
+
             app.Run(async (context) =>
             {
                 
@@ -64,11 +65,11 @@ namespace CalendarHelper
                 try
                 {
 
-                    var urls = (string)Configuration["URLs"];
-                    var urlsArray = urls.Split(';');
+                    var urlsArray = UrlsArray();
 
-                    context.Response.ContentType = "text/calendar";
-                    context.Response.Headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
+                    context.Response.ContentType = "text/calendar; charset=UTF-8";
+                    AddHeaders(context);
+                    //context.Response.Headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
                     var calendarCreator = new CalendarCreator(logger);
                     await context.Response.WriteAsync(await calendarCreator.Merge(urlsArray));
                 }
@@ -78,6 +79,31 @@ namespace CalendarHelper
                 }
 
             });
+        }
+
+        private static void AddHeaders(HttpContext context)
+        {
+            var headers = context.Response.Headers;
+            headers.Add("X-Content-Type-Options", "nosniff");
+            headers.Add("X-Frame-Options", "SAMEORIGIN");
+            headers.Add("X-XSS-Protection", "1; mode=block");
+            headers.Add("Pragma", "no-cache");
+            headers.Add("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+        }
+
+        private string[] UrlsArray()
+        {
+            var urls = (string) Configuration["URLs"];
+            string[] urlsArray;
+            if (urls.Contains(";"))
+            {
+                urlsArray = urls.Split(';');
+            }
+            else
+            {
+                urlsArray = new[] {urls};
+            }
+            return urlsArray;
         }
     }
 }
