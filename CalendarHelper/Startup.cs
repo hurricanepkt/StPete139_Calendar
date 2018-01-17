@@ -54,11 +54,11 @@ namespace CalendarHelper
             app.Run(async (context) =>
             {
                 var blah = Configuration.GetChildren();
-                var outBlah = JsonConvert.SerializeObject(blah);
+                //var outBlah = JsonConvert.SerializeObject(blah);
                 var wizard = (string) Configuration["option1"];
                 //foreach (var wizard in wizards)
                 //{
-                    await context.Response.WriteAsync(outBlah);
+                    await context.Response.WriteAsync(wizard);
                 //}
               
                 //context.Response.ContentType = "text/calendar";
