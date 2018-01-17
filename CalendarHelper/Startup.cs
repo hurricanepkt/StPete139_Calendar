@@ -7,6 +7,7 @@ using CalendarHelper.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,13 +41,16 @@ namespace CalendarHelper
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMemoryCache();
+            services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = "redistogo:33e05a748e83e9b41d76b5e9e1cf25dc@soldierfish.redistogo.com:10266";
+            });
         }
 
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IMemoryCache memoryCache)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache memoryCache)
         {
             loggerFactory.AddConsole();
 
