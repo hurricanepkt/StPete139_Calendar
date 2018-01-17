@@ -19,10 +19,15 @@ namespace CalendarHelper
     {
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
+           
+            var builder = new ConfigurationBuilder();
+            if (File.Exists(Directory.GetCurrentDirectory() + "\appsettings.json"))
+            {
+                builder
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json");
+            }
+            builder.AddEnvironmentVariables();
             Configuration = builder.Build();
             Console.WriteLine("Startup Constructor");
         }
