@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace CalendarHelper
 {
@@ -46,10 +47,12 @@ namespace CalendarHelper
 
             app.Run(async (context) =>
             {
+                var blah = Configuration.GetChildren();
+                var outBlah = JsonConvert.SerializeObject(blah);
                 var wizard = (string) Configuration["option1"];
                 //foreach (var wizard in wizards)
                 //{
-                    await context.Response.WriteAsync(wizard);
+                    await context.Response.WriteAsync(outBlah);
                 //}
               
                 //context.Response.ContentType = "text/calendar";
