@@ -8,9 +8,11 @@ using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
 using System.Net.Http;
+using System.Text;
 using System.Net.Http.Headers;
 using System.Reflection;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.TimeZones;
@@ -22,20 +24,20 @@ namespace CalendarHelper.Infrastructure
         public async Task<string> Merge(string[] urlsArray)
         {
             var retVal = new Calendar();
-            var downloadTasks = urlsArray.Where(f=> !String.IsNullOrEmpty(f)).Select(GetUrlAsCalendar).ToArray();
+            var downloadTasks = urlsArray.Where(f => !String.IsNullOrEmpty(f)).Select(GetUrlAsCalendar).ToArray();
             var calendars = await Task.WhenAll(downloadTasks);
-         
-            
+
+
             foreach (var calendar in calendars)
             {
                 foreach (var calendarEvent in calendar.Events)
                 {
-                   
-                    
-                  
-                        var toAdd = CopyCalendarEvent(calendarEvent);
-                        retVal.Events.Add(toAdd);
-                 
+
+
+
+                    var toAdd = CopyCalendarEvent(calendarEvent);
+                    retVal.Events.Add(toAdd);
+
                 }
                 //       retVal.Events.AddRange(calendar.Events);
             }
@@ -47,19 +49,19 @@ namespace CalendarHelper.Infrastructure
                     retVal.AddTimeZone(tzid, new DateTime(2000, 1, 1), true);
                 }
             }
-           // File.AppendAllText(@"C:\Users\mark.greenway\Desktop\trash\playing\tzids.txt", String.Join("\n",Tzids.Distinct().ToArray()));
+            // File.AppendAllText(@"C:\Users\mark.greenway\Desktop\trash\playing\tzids.txt", String.Join("\n",Tzids.Distinct().ToArray()));
             return new CalendarSerializer().SerializeToString(retVal);
 
         }
-       
+
 
         private static readonly List<string> Tzids = new List<string>();
         private readonly ILogger _logger;
-        private readonly IMemoryCache _memoryCache;
-        public CalendarCreator(ILogger logger , IMemoryCache memoryCache)
+        private readonly IDistributedCache _cache;
+        public CalendarCreator(ILogger logger, IDistributedCache cache)
         {
             _logger = logger;
-            _memoryCache = memoryCache;
+            _cache = cache;
         }
 
         private static CalendarEvent CopyCalendarEvent(CalendarEvent calendarEvent)
@@ -68,11 +70,11 @@ namespace CalendarHelper.Infrastructure
             IDateTime staDateTime = new CalDateTime(calendarEvent.DtStart.Value, calendarEvent.DtStart.TzId);
             var toAdd = new CalendarEvent
             {
-               
+
                 DtStart = calendarEvent.DtStart,
                 DtEnd = calendarEvent.DtEnd,
                 Duration = calendarEvent.Duration,
-               
+
                 IsAllDay = calendarEvent.IsAllDay,
                 GeographicLocation = calendarEvent.GeographicLocation,
                 Location = calendarEvent.Location,
@@ -88,10 +90,10 @@ namespace CalendarHelper.Infrastructure
 
                 LastModified = calendarEvent.LastModified,
                 Priority = calendarEvent.Priority,
-            
+
                 RelatedComponents = calendarEvent.RelatedComponents,
                 Sequence = calendarEvent.Sequence,
-               
+
                 Summary = calendarEvent.Summary,
                 Attendees = calendarEvent.Attendees,
                 Comments = calendarEvent.Comments,
@@ -129,7 +131,7 @@ namespace CalendarHelper.Infrastructure
                 dest.Add(calendarEventRecurrenceRule);
             }
             return dest;
-            
+
         }
 
         private static List<PeriodList> PeriodListList(IEnumerable<PeriodList> blah)
@@ -150,23 +152,20 @@ namespace CalendarHelper.Infrastructure
         private async Task<Calendar> GetUrlAsCalendar(string url)
         {
             string cacheEntry;
+            var aKey = Base64.Base64Encode(url);
 
-            // Look for cache key.
-            if (!_memoryCache.TryGetValue(url, out cacheEntry))
+            var value = await _cache.GetAsync(aKey);
+            if (value != null)
             {
-                // Key not in cache, so get data.
-                cacheEntry = await GetUrlAsString(url);
-
-                // Set cache options.
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(3));
-
-
-                // Save data in cache.
-                _memoryCache.Set(url, cacheEntry, cacheEntryOptions);
+                cacheEntry = Encoding.UTF8.GetString(value);
             }
-
-           
+            else
+            {
+                var opt = new DistributedCacheEntryOptions();
+                opt.SetAbsoluteExpiration(TimeSpan.FromHours(3));
+                cacheEntry = await GetUrlAsString(url);
+                await _cache.SetAsync(aKey, Encoding.UTF8.GetBytes(cacheEntry), opt);
+            }
             return Calendar.Load(cacheEntry);
         }
 

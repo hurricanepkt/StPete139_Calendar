@@ -41,9 +41,12 @@ namespace CalendarHelper
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var config = (string) Configuration["Redis"];
             services.AddDistributedRedisCache(options =>
             {
-                options.Configuration = "redistogo:33e05a748e83e9b41d76b5e9e1cf25dc@soldierfish.redistogo.com:10266";
+
+                options.Configuration = config;
+                options.InstanceName = "";
             });
         }
 
