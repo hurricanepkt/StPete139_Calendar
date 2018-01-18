@@ -55,8 +55,9 @@ namespace CalendarHelper
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache memoryCache)
         {
-            loggerFactory.AddConsole();
-
+            loggerFactory
+                .AddConsole()
+                .AddDebug(LogLevel.Trace);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -69,6 +70,7 @@ namespace CalendarHelper
             {
                 
                 var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
+               
                 logger.LogInformation("Log Info");
                 try
                 {
@@ -87,8 +89,7 @@ namespace CalendarHelper
                 }
 
             });
-            var aLogger = loggerFactory.CreateLogger("CalendarHelper.Startup");
-            aLogger.LogWarning("Done Configuring Setup");
+        
         }
 
         private static void AddHeaders(HttpContext context)
