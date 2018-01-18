@@ -87,6 +87,8 @@ namespace CalendarHelper
                 }
 
             });
+            var aLogger = loggerFactory.CreateLogger("CalendarHelper.Startup");
+            aLogger.LogWarning("Done Configuring Setup");
         }
 
         private static void AddHeaders(HttpContext context)

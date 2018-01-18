@@ -151,6 +151,7 @@ namespace CalendarHelper.Infrastructure
 
         private async Task<Calendar> GetUrlAsCalendar(string url)
         {
+            _logger.LogInformation("GetUrlAsCalendar" + url);
             string cacheEntry;
             var aKey = Base64.Base64Encode(url);
 
