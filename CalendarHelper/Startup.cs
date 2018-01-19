@@ -84,10 +84,8 @@ namespace CalendarHelper
             
 
                     var urlsArray = UrlsArray();
-
-                    //context.Response.ContentType = "text/calendar; charset=UTF-8";
-                    AddHeaders(context);
-                    //context.Response.Headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
+                  
+                    //AddHeaders(context);
                     var calendarCreator = new CalendarCreator(logger, memoryCache);
                     await context.Response.WriteAsync(await calendarCreator.Merge(urlsArray));
                 }
@@ -104,11 +102,14 @@ namespace CalendarHelper
         private static void AddHeaders(HttpContext context)
         {
             var headers = context.Response.Headers;
+           
             headers.Add("X-Content-Type-Options", "nosniff");
             headers.Add("X-Frame-Options", "SAMEORIGIN");
             headers.Add("X-XSS-Protection", "1; mode=block");
             headers.Add("Pragma", "no-cache");
             headers.Add("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+            //context.Response.ContentType = "text/calendar; charset=UTF-8";
+            //headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
         }
 
         private string[] UrlsArray()
