@@ -87,12 +87,15 @@ namespace CalendarHelper
                   
                     //AddHeaders(context);
                     var calendarCreator = new CalendarCreator(logger, memoryCache);
-                    await context.Response.WriteAsync(await calendarCreator.Merge(urlsArray));
+                    var merge = await calendarCreator.Merge(urlsArray);
+                    await context.Response.WriteAsync("FILE CORRECT");
+                    await context.Response.WriteAsync(merge);
                 }
                 catch (Exception ex)
                 {
                     var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
                     logger.LogError(new EventId(-1, "Startup configure error"), ex, "Mark's Error Message", null);
+                    await context.Response.WriteAsync("Exception ex\n" + ex.Message);
                 }
 
             });
