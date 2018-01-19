@@ -41,13 +41,21 @@ namespace CalendarHelper
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var config = (string) Configuration["Redis"];
-            services.AddDistributedRedisCache(options =>
+            try
             {
+                var config = (string) Configuration["Redis"];
+                services.AddDistributedRedisCache(options =>
+                {
 
-                options.Configuration = config;
-                options.InstanceName = "";
-            });
+                    options.Configuration = config;
+                    options.InstanceName = "";
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Configure Services " + ex.Message);
+                
+            }
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -68,16 +76,16 @@ namespace CalendarHelper
 
             app.Run(async (context) =>
             {
-                
-                var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
-               
-                logger.LogInformation("Log Info");
                 try
                 {
+                    var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
+               
+                   logger.LogInformation("Log Info");
+            
 
                     var urlsArray = UrlsArray();
 
-                    context.Response.ContentType = "text/calendar; charset=UTF-8";
+                    //context.Response.ContentType = "text/calendar; charset=UTF-8";
                     AddHeaders(context);
                     //context.Response.Headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
                     var calendarCreator = new CalendarCreator(logger, memoryCache);
@@ -85,6 +93,7 @@ namespace CalendarHelper
                 }
                 catch (Exception ex)
                 {
+                    var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
                     logger.LogError(new EventId(-1, "Startup configure error"), ex, "Mark's Error Message", null);
                 }
 
