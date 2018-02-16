@@ -151,17 +151,19 @@ namespace CalendarHelper.Infrastructure
 
         private async Task<Calendar> GetUrlAsCalendar(string url)
         {
-            _logger.LogInformation("GetUrlAsCalendar" + url);
+            _logger.LogInformation("GetUrlAsCalendar - " + url);
             string cacheEntry;
             var aKey = Base64.Base64Encode(url);
 
             var value = await _cache.GetAsync(aKey);
             if (value != null)
             {
+                _logger.LogInformation("Cache Hit");
                 cacheEntry = Encoding.UTF8.GetString(value);
             }
             else
             {
+                _logger.LogInformation("Cache Miss");
                 var opt = new DistributedCacheEntryOptions();
                 opt.SetAbsoluteExpiration(TimeSpan.FromHours(3));
                 cacheEntry = await GetUrlAsString(url);
