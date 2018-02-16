@@ -8,6 +8,11 @@
         <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
     </PropertyGroup>
+    <ItemGroup>
+      <Compile Remove="Infrastructure\CustomLogger.cs" />
+      <Compile Remove="Infrastructure\CustomLoggerConfiguration.cs" />
+      <Compile Remove="Infrastructure\CustomLoggerProvider.cs" />
+    </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Ical.Net" Version="4.0.6" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
@@ -17,6 +22,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Slack" Version="1.1.0" />
     <PackageReference Include="NodaTime" Version="2.2.3" />
   </ItemGroup>
 

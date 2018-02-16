@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using System.Net.Http;
 using CalendarHelper.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Slack;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 
@@ -69,16 +71,24 @@ namespace CalendarHelper
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache memoryCache)
         {
+           
             loggerFactory
-                .AddConsole()
+                .AddConsole()  
                 .AddDebug(LogLevel.Trace);
+            
+          
+     
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+
+
             app.UseStaticFiles();
             app.UseResponseBuffering();
+
+            ConfigureSlack(loggerFactory, Configuration["SlackLocation"], env.ApplicationName, env.EnvironmentName);
 
             app.Run(async (context) =>
             {
@@ -106,6 +116,17 @@ namespace CalendarHelper
 
             });
 
+        }
+
+        private static void ConfigureSlack(ILoggerFactory loggerFactory, string slackLocation, string appName, string envName)
+        {
+            var slackConfig = new SlackConfiguration()
+            {
+                MinLevel = LogLevel.Information,
+                WebhookUrl = new Uri(slackLocation)
+            };
+            Func<string, LogLevel, Exception, bool> filter = (category, logLevel, exc) => logLevel >= LogLevel.Warning;
+            loggerFactory.AddProvider(new SlackLoggerProvider(filter, slackConfig, new HttpClient(), appName, envName));
         }
 
         private static void AddHeaders(HttpContext context)

@@ -158,12 +158,14 @@ namespace CalendarHelper.Infrastructure
             var value = await _cache.GetAsync(aKey);
             if (value != null)
             {
-                _logger.LogInformation("Cache Hit");
+                _logger.LogWarning("Cache Hit");
+                _logger.LogWarning(aKey);
                 cacheEntry = Encoding.UTF8.GetString(value);
             }
             else
             {
-                _logger.LogInformation("Cache Miss");
+                _logger.LogWarning("Cache Miss");
+                _logger.LogWarning(aKey);
                 var opt = new DistributedCacheEntryOptions();
                 opt.SetAbsoluteExpiration(TimeSpan.FromHours(3));
                 cacheEntry = await GetUrlAsString(url);
