@@ -21,18 +21,24 @@ namespace CalendarHelper
     {
         public Startup(IHostingEnvironment env)
         {
-
-            var builder = new ConfigurationBuilder();
-            if (File.Exists(Directory.GetCurrentDirectory() + "\\appsettings.json"))
+            Console.WriteLine("Before");
+            try
             {
-              
-                builder
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json");
+                var builder = new ConfigurationBuilder();
+                if (File.Exists(Directory.GetCurrentDirectory() + "\\appsettings.json"))
+                {
+
+                    builder
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json");
+                }
+                builder.AddEnvironmentVariables();
+                Configuration = builder.Build();
             }
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
-         
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
 
@@ -43,7 +49,7 @@ namespace CalendarHelper
         {
             try
             {
-                var config = (string) Configuration["Redis"];
+                var config = (string)Configuration["Redis"];
                 services.AddDistributedRedisCache(options =>
                 {
 
@@ -54,7 +60,7 @@ namespace CalendarHelper
             catch (Exception ex)
             {
                 Console.Error.WriteLine("Configure Services " + ex.Message);
-                
+
             }
         }
 
@@ -79,12 +85,12 @@ namespace CalendarHelper
                 try
                 {
                     var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
-               
-                   logger.LogInformation("Log Info");
-            
+
+                    logger.LogInformation("Log Info");
+
 
                     var urlsArray = UrlsArray();
-                  
+
                     //AddHeaders(context);
                     var calendarCreator = new CalendarCreator(logger, memoryCache);
                     var merge = await calendarCreator.Merge(urlsArray);
@@ -99,13 +105,13 @@ namespace CalendarHelper
                 }
 
             });
-        
+
         }
 
         private static void AddHeaders(HttpContext context)
         {
             var headers = context.Response.Headers;
-           
+
             headers.Add("X-Content-Type-Options", "nosniff");
             headers.Add("X-Frame-Options", "SAMEORIGIN");
             headers.Add("X-XSS-Protection", "1; mode=block");
@@ -117,7 +123,7 @@ namespace CalendarHelper
 
         private string[] UrlsArray()
         {
-            var urls = (string) Configuration["URLs"];
+            var urls = (string)Configuration["URLs"];
             string[] urlsArray;
             if (urls.Contains(";"))
             {
@@ -125,7 +131,7 @@ namespace CalendarHelper
             }
             else
             {
-                urlsArray = new[] {urls};
+                urlsArray = new[] { urls };
             }
             return urlsArray;
         }
