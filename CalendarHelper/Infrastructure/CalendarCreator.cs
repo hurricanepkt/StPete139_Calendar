@@ -50,6 +50,7 @@ namespace CalendarHelper.Infrastructure
                 }
             }
             // File.AppendAllText(@"C:\Users\mark.greenway\Desktop\trash\playing\tzids.txt", String.Join("\n",Tzids.Distinct().ToArray()));
+            _logger.LogWarning("Time To Serialize");
             return new CalendarSerializer().SerializeToString(retVal);
 
         }

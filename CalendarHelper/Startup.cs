@@ -104,8 +104,9 @@ namespace CalendarHelper
                     //AddHeaders(context);
                     var calendarCreator = new CalendarCreator(logger, memoryCache);
                     var merge = await calendarCreator.Merge(urlsArray);
-                    await context.Response.WriteAsync("FILE CORRECT");
+                    logger.LogWarning("Merged");
                     await context.Response.WriteAsync(merge);
+                    logger.LogWarning("Sent to response");
                 }
                 catch (Exception ex)
                 {
