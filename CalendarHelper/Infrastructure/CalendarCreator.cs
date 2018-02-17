@@ -35,65 +35,27 @@ namespace CalendarHelper.Infrastructure
         public async Task<string> Merge(string[] urlsArray)
         {
 
-        
+            var aKey = _env.ApplicationName + "." + _env.EnvironmentName;
             var downloadTasks = urlsArray.Where(f => !String.IsNullOrEmpty(f)).Select(GetUrlAsCalendar).ToArray();
             var calendars = await Task.WhenAll(downloadTasks);
            
             if (_anyMisses)
             {
-                return ProcessCalendars(calendars);
+                return await ProcessCalendarsAsync(calendars, aKey);
             }
-            var aKey = _env.ApplicationName + "." + _env.EnvironmentName;
+           
             var raw = await _cache.GetAsync(aKey);
             if (raw != null)
             {
-                return Encoding.UTF8.GetString(Decompress(raw));
+                return Encoding.UTF8.GetString(raw);
             }
-            var toSave = ProcessCalendars(calendars);
-            var opt = new DistributedCacheEntryOptions();
-            opt.SetAbsoluteExpiration(TimeSpan.FromHours(3));
-            await _cache.SetAsync(aKey, Compress(Encoding.UTF8.GetBytes(toSave)), opt);
+            var toSave = await ProcessCalendarsAsync(calendars, aKey);
+   
             return toSave;
         }
 
-        static byte[] Decompress(byte[] gzip)
-        {
-            // Create a GZIP stream with decompression mode.
-            // ... Then create a buffer and write into while reading from the GZIP stream.
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip),
-                CompressionMode.Decompress))
-            {
-                const int size = 4096;
-                byte[] buffer = new byte[size];
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    int count = 0;
-                    do
-                    {
-                        count = stream.Read(buffer, 0, size);
-                        if (count > 0)
-                        {
-                            memory.Write(buffer, 0, count);
-                        }
-                    }
-                    while (count > 0);
-                    return memory.ToArray();
-                }
-            }
-        }
-        public static byte[] Compress(byte[] raw)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                using (GZipStream gzip = new GZipStream(memory,
-                    CompressionMode.Compress, true))
-                {
-                    gzip.Write(raw, 0, raw.Length);
-                }
-                return memory.ToArray();
-            }
-        }
-        private string ProcessCalendars(Calendar[] calendars)
+
+        private async Task<string> ProcessCalendarsAsync(Calendar[] calendars, string aKey)
         {
             Calendar retVal = new Calendar();
             foreach (var calendar in calendars)
@@ -123,7 +85,11 @@ namespace CalendarHelper.Infrastructure
             }
             // File.AppendAllText(@"C:\Users\mark.greenway\Desktop\trash\playing\tzids.txt", String.Join("\n",Tzids.Distinct().ToArray()));
             //_logger.LogWarning("Time To Serialize");
-            return new CalendarSerializer().SerializeToString(retVal);
+            var retStr = new CalendarSerializer().SerializeToString(retVal);
+            var opt = new DistributedCacheEntryOptions();
+            opt.SetAbsoluteExpiration(TimeSpan.FromHours(3));
+            await _cache.SetAsync(aKey, Encoding.UTF8.GetBytes(retStr), opt);
+            return retStr;
         }
 
 
