@@ -36,21 +36,17 @@ namespace CalendarHelper.Infrastructure
         {
 
             var aKey = _env.ApplicationName + "." + _env.EnvironmentName;
-            var downloadTasks = urlsArray.Where(f => !String.IsNullOrEmpty(f)).Select(GetUrlAsCalendar).ToArray();
-            var calendars = await Task.WhenAll(downloadTasks);
-           
-            if (_anyMisses)
-            {
-                return await ProcessCalendarsAsync(calendars, aKey);
-            }
-           
+
             var raw = await _cache.GetAsync(aKey);
             if (raw != null)
             {
                 return Encoding.UTF8.GetString(raw);
             }
+
+
+            var downloadTasks = urlsArray.Where(f => !String.IsNullOrEmpty(f)).Select(GetUrlAsCalendar).ToArray();
+            var calendars = await Task.WhenAll(downloadTasks);
             var toSave = await ProcessCalendarsAsync(calendars, aKey);
-   
             return toSave;
         }
 
@@ -96,7 +92,6 @@ namespace CalendarHelper.Infrastructure
         private static readonly List<string> Tzids = new List<string>();
         private readonly ILogger _logger;
         private readonly IDistributedCache _cache;
-        private bool _anyMisses;
         private IHostingEnvironment _env;
 
         public CalendarCreator(ILogger logger, IDistributedCache cache, IHostingEnvironment env)
@@ -104,7 +99,6 @@ namespace CalendarHelper.Infrastructure
             _logger = logger;
             _cache = cache;
             _env = env;
-            _anyMisses = false;
         }
 
         private static CalendarEvent CopyCalendarEvent(CalendarEvent calendarEvent)
@@ -207,13 +201,12 @@ namespace CalendarHelper.Infrastructure
             }
             else
             {
-                _anyMisses = true;
                 //_logger.LogWarning("Cache Miss");
                 // _logger.LogWarning(aKey);
                 var opt = new DistributedCacheEntryOptions();
                 opt.SetAbsoluteExpiration(TimeSpan.FromHours(3));
                 cacheEntry = await GetUrlAsString(url);
-                await _cache.SetAsync(aKey, Encoding.UTF8.GetBytes(cacheEntry), opt);
+         //       await _cache.SetAsync(aKey, Encoding.UTF8.GetBytes(cacheEntry), opt);
             }
             return Calendar.Load(cacheEntry);
         }
