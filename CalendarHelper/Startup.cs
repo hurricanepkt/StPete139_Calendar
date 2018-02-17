@@ -102,7 +102,7 @@ namespace CalendarHelper
                     var urlsArray = UrlsArray();
 
                     //AddHeaders(context);
-                    var calendarCreator = new CalendarCreator(logger, memoryCache);
+                    var calendarCreator = new CalendarCreator(logger, memoryCache, env);
                     var merge = await calendarCreator.Merge(urlsArray);
                     await context.Response.WriteAsync(merge);
                     sw.Stop();

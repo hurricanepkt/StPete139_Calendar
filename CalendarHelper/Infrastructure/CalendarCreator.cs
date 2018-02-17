@@ -24,10 +24,7 @@ namespace CalendarHelper.Infrastructure
 {
     public class CalendarCreator
     {
-        public CalendarCreator(IHostingEnvironment env)
-        {
-            _env = env;
-        }
+       
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings()
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -136,10 +133,11 @@ namespace CalendarHelper.Infrastructure
         private bool _anyMisses;
         private IHostingEnvironment _env;
 
-        public CalendarCreator(ILogger logger, IDistributedCache cache)
+        public CalendarCreator(ILogger logger, IDistributedCache cache, IHostingEnvironment env)
         {
             _logger = logger;
             _cache = cache;
+            _env = env;
             _anyMisses = false;
         }
 
