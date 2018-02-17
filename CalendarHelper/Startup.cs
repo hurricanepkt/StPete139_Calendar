@@ -101,12 +101,12 @@ namespace CalendarHelper
 
                     var urlsArray = UrlsArray();
 
-                    //AddHeaders(context);
+                    AddHeaders(context);
                     var calendarCreator = new CalendarCreator(logger, memoryCache, env);
                     var merge = await calendarCreator.Merge(urlsArray);
                     await context.Response.WriteAsync(merge);
                     sw.Stop();
-                    logger.LogWarning("Time To Execute : " + sw.Elapsed.ToString("g"));
+                    logger.LogWarning("Time To Execute : " + sw.Elapsed.ToString("g") + " at " + DateTime.UtcNow.ToString("u"));
                 }
                 catch (Exception ex)
                 {
