@@ -14,6 +14,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NodaTime;
 using NodaTime.TimeZones;
 
@@ -21,8 +22,16 @@ namespace CalendarHelper.Infrastructure
 {
     public class CalendarCreator
     {
+        private readonly JsonSerializerSettings _settings = new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+        private readonly DateTime StartDate = DateTime.Today.AddDays(-7);
+        private readonly DateTime EndDate = DateTime.Today.AddDays(90);
         public async Task<string> Merge(string[] urlsArray)
         {
+           
             var retVal = new Calendar();
             var downloadTasks = urlsArray.Where(f => !String.IsNullOrEmpty(f)).Select(GetUrlAsCalendar).ToArray();
             var calendars = await Task.WhenAll(downloadTasks);
@@ -33,10 +42,16 @@ namespace CalendarHelper.Infrastructure
                 foreach (var calendarEvent in calendar.Events)
                 {
 
-
-
-                    var toAdd = CopyCalendarEvent(calendarEvent);
-                    retVal.Events.Add(toAdd);
+                    if (calendarEvent.GetOccurrences(StartDate, EndDate).Any())
+                    {
+                        _logger.LogInformation(JsonConvert.SerializeObject(calendarEvent.Summary, _settings));
+                        var toAdd = CopyCalendarEvent(calendarEvent);
+                        retVal.Events.Add(toAdd);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("skipping");
+                    }
 
                 }
                 //       retVal.Events.AddRange(calendar.Events);
@@ -68,7 +83,7 @@ namespace CalendarHelper.Infrastructure
         private static CalendarEvent CopyCalendarEvent(CalendarEvent calendarEvent)
         {
             Tzids.Add(calendarEvent.DtStart.TzId);
-            IDateTime staDateTime = new CalDateTime(calendarEvent.DtStart.Value, calendarEvent.DtStart.TzId);
+ 
             var toAdd = new CalendarEvent
             {
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
@@ -95,7 +96,7 @@ namespace CalendarHelper
                 try
                 {
                     var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
-
+                    Stopwatch sw = Stopwatch.StartNew();
                     logger.LogInformation("Log Info");
 
 
@@ -107,6 +108,8 @@ namespace CalendarHelper
                     logger.LogWarning("Merged");
                     await context.Response.WriteAsync(merge);
                     logger.LogWarning("Sent to response");
+                    sw.Stop();
+                    logger.LogWarning("Time To Execute : " + sw.Elapsed.ToString("g"));
                 }
                 catch (Exception ex)
                 {
