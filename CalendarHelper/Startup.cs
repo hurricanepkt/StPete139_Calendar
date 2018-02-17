@@ -106,7 +106,7 @@ namespace CalendarHelper
                     var merge = await calendarCreator.Merge(urlsArray);
                     await context.Response.WriteAsync(merge);
                     sw.Stop();
-                    logger.LogWarning("Time To Execute : " + sw.Elapsed.ToString("g") + " at " + DateTime.UtcNow.ToString("u"));
+                    //logger.LogWarning("Time To Execute : " + sw.Elapsed.ToString("g") + " at " + DateTime.UtcNow.ToString("u"));
                 }
                 catch (Exception ex)
                 {
@@ -140,7 +140,7 @@ namespace CalendarHelper
             headers.Add("Pragma", "no-cache");
             headers.Add("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
             context.Response.ContentType = "text/calendar; charset=UTF-8";
-            headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
+            headers.Add("Content-Disposition", "inline; filename=StPete139.ics");
         }
 
         private string[] UrlsArray()
