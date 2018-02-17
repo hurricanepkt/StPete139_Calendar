@@ -97,7 +97,6 @@ namespace CalendarHelper
                 {
                     var logger = loggerFactory.CreateLogger("CalendarHelper.Startup");
                     Stopwatch sw = Stopwatch.StartNew();
-                    logger.LogInformation("Log Info");
 
 
                     var urlsArray = UrlsArray();
@@ -105,9 +104,7 @@ namespace CalendarHelper
                     //AddHeaders(context);
                     var calendarCreator = new CalendarCreator(logger, memoryCache);
                     var merge = await calendarCreator.Merge(urlsArray);
-                    logger.LogWarning("Merged");
                     await context.Response.WriteAsync(merge);
-                    logger.LogWarning("Sent to response");
                     sw.Stop();
                     logger.LogWarning("Time To Execute : " + sw.Elapsed.ToString("g"));
                 }
