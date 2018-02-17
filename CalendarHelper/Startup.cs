@@ -139,8 +139,8 @@ namespace CalendarHelper
             headers.Add("X-XSS-Protection", "1; mode=block");
             headers.Add("Pragma", "no-cache");
             headers.Add("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
-            //context.Response.ContentType = "text/calendar; charset=UTF-8";
-            //headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
+            context.Response.ContentType = "text/calendar; charset=UTF-8";
+            headers.Add("Content-Disposition", "attachment; filename=StPete139.ics");
         }
 
         private string[] UrlsArray()
