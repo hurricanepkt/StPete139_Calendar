@@ -140,9 +140,6 @@ namespace CalendarHelper
             headers.Add("Pragma", "no-cache");
             headers.Add("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
             headers.Add("Expires", "Mon, 01 Jan 1990 00:00:00 GMT");
-            headers.Add("Accept-Ranges", "none");
-            headers.Add("Vary", "Accept-Encoding");
-            headers.Add("Transfer-Encoding", "chunked");
             context.Response.ContentType = "text/calendar; charset=UTF-8";
             //headers.Add("Content-Disposition", "inline; filename=StPete139.ics");
         }
